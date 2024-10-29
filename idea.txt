@@ -1,0 +1,43 @@
+# 
+
+En vez de crear algo que sea solo para las carreras puede estar enfocado mas en el dia a dia, en el que vos le pases un pdf con los horarios que vos necesites cumplir y este te los lea, y te los ponga ya en un salvapantalla
+
+Los datos deberian guardarse de alguna forma local, ya que si te quedas sin internet estaria bueno que se pasaran los datos
+
+ademas deberia haber una confirmacion alrededor de 10 minutos despues de que paso la hora para consultarte si se cumplio ese horario, si no se cumplio que te pregunte cuanto se atraso esa salida (como puede ser una salida a pista)
+
+la forma de ejecutarse deberia ser automatica, es decir una vez que vos prendas tu pc la aplicacion tiene que comenzar a funcionar (como funciona wp engine)
+
+investigar que lenguaje de programacion me conviene para hacer esta aplicacion, ya que como tiene que utilizar funciones de windows (como pueden ser el reloj, el dia, y el salvapantallas) me da miedo que no funcione correctamente
+
+el tema del lector de pdf deberia tener varias opciones, pensandolo un poco rapido deberian ser 3:
+
+- Leer los horarios que tienen un label en especifico (Como puede ser PROCAR 4000 A)
+- Solo leer los horarios de cada label (como puede ser el del 4000)
+- Que vos le agregues los horarios y se almacenen
+
+# Race plan
+
+La aplicacion se realizara en C# con el framework de .NET
+
+Partes importantes del proyecto:
+
+## Base de datos
+
+Que lea un archivo PDF con las tandas y yo le marco cuales tiene que tomar en cuenta y cuales no
+
+- [ ]  Conexion a la base de datos
+- [ ]  Creas las tablas (MysqlFront)
+- [ ]  Escribir en la base de datos
+- [ ]  Editar la base de datos
+
+## Pantalla prinicipal
+
+- [ ]  Que se inicie cuando se prende la pc (en segundo plano)
+- [ ]  Cambiar los datos de la base de datos
+- [ ]  Conectarse al reloj de la computadora
+
+## Configurar el Salvapantallas
+
+- [ ]  Mostrar los datos
+- [ ]  Que se este siempre ejecutando y actualizando
