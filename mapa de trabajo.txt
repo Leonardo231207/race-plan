@@ -1,0 +1,57 @@
+1. Módulo de Entrada y Procesamiento de PDF
+Objetivo: Permitir al usuario seleccionar el archivo PDF y extraer de él los datos relevantes.
+Características:
+Interfaz de carga: Un campo para seleccionar el archivo PDF.
+Configuración dinámica: Un campo de entrada en la UI para definir qué texto o etiqueta se usará para filtrar los horarios (por ejemplo, “PROCAR 4000 A” u otro).
+Extracción de datos: Utilizar una librería para leer PDFs y extraer el texto, luego procesarlo (por ejemplo, mediante expresiones regulares) para separar la hora de inicio, hora de fin y el evento.
+2. Módulo de Almacenamiento Local
+Objetivo: Guardar los datos extraídos de forma persistente sin necesidad de conexión a internet.
+Características:
+Formato sencillo: Puedes utilizar archivos JSON o incluso un archivo de texto estructurado.
+Acceso rápido: La aplicación leerá estos datos al iniciarse, permitiendo que siempre tengas acceso a la información, incluso después de apagar y volver a encender la computadora.
+3. Módulo de Gestión de Horarios y Notificaciones
+Objetivo: Monitorear la hora del sistema para saber cuándo se debe mostrar cada evento y confirmar su cumplimiento.
+Características:
+Monitor de eventos: Un servicio o hilo en segundo plano que verifique la hora del sistema.
+Notificaciones: Cuando un horario se cumple, se activa una notificación y, 10 minutos después, se pregunta al usuario si se cumplió el evento o se produjo un retraso.
+Registro de confirmaciones: Registrar el estado (cumplido o retraso) y, en caso de retraso, el tiempo de atraso.
+4. Módulo de Interfaz Gráfica Unificada
+Objetivo: Ofrecer al usuario una única ventana o aplicación donde pueda:
+Cargar y configurar el PDF.
+Visualizar y editar los horarios extraídos.
+Configurar parámetros (por ejemplo, el criterio de búsqueda, tiempos de notificación, etc.).
+Activar o desactivar el “modo salvapantallas”.
+Características:
+Interfaz intuitiva: Aunque no tenga que ser vistosa, debe ser clara y fácil de usar.
+Edición directa: Permitir que el usuario modifique directamente los datos extraídos antes de guardarlos.
+5. Módulo de Salvapantallas Integrado
+Objetivo: Mostrar los horarios en forma de salvapantallas dentro del mismo programa.
+Características:
+Activación automática o manual: El programa puede configurarse para activarse automáticamente cuando la PC entre en modo inactivo o mediante una opción en la interfaz.
+Visualización dinámica: Una ventana o modo “pantalla completa” que muestre los horarios de forma clara, pudiendo rotar entre eventos o destacarlos conforme se vayan cumpliendo.
+Integración con el gestor de horarios: El mismo módulo que gestiona las notificaciones puede activar este modo para mostrar, por ejemplo, la confirmación o el retraso del evento.
+6. Configuración para Inicio Automático
+Objetivo: Garantizar que la aplicación se inicie automáticamente cuando se prenda la PC.
+Características:
+Integración con el sistema: Para Windows, puedes agregar una entrada en el registro o colocar un acceso directo en la carpeta de “Inicio” del sistema.
+Flujo de Trabajo Completo
+Inicio de la Aplicación:
+Al encender la PC, la aplicación se lanza automáticamente. Carga los datos locales (horarios previamente guardados) y se ejecuta en segundo plano (puede minimizarse a la bandeja del sistema).
+
+Carga y Configuración:
+Desde la interfaz principal, el usuario puede:
+
+Seleccionar un nuevo archivo PDF.
+Especificar el texto a buscar para filtrar los eventos.
+Visualizar y editar los datos extraídos.
+Guardar la configuración y los datos localmente.
+Gestión en Tiempo Real:
+Un componente en segundo plano monitorea la hora del sistema:
+
+Cuando se alcanza la hora de inicio de un evento, muestra una notificación.
+10 minutos después del evento, se activa una ventana (o se usa el mismo salvapantallas) para confirmar si se cumplió o registrar el retraso.
+Modo Salvapantallas:
+Puede activarse de forma automática por inactividad o manualmente desde la interfaz:
+
+Muestra los horarios en pantalla completa.
+Permite visualizar los eventos próximos y su estado (pendiente, cumplido, retrasado).
