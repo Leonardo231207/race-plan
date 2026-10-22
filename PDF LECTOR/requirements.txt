@@ -1,0 +1,9 @@
+pdfplumber==0.11.4
+PyQt5==5.15.10
+pywin32==306
+plyer==2.1.0
+pypdfium2==4.30.0
+PyMuPDF==1.24.11
+rich==13.9.4
+Pillow==10.4.0
+watchdog==5.0.3

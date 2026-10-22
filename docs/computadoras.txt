@@ -1,0 +1,20 @@
+Notebook Papa 1 Compac
+
+| **Componente** | **Especificaciones** |
+| --- | --- |
+| Marca y Modelo | HP Compaq 610 |
+| Procesador (CPU) | Intel Core Duo T5870 2.00Ghz |
+| Memoria RAM | 4 GB |
+| Almacenamiento | 465 GB |
+| Sistema Operativo | Windows 7 fallando  |
+
+
+- Notebook papa 2: (Ex Argentinos Juniors)
+
+| **Componente** | **Especificaciones** |
+| --- | --- |
+| Marca y Modelo | HP ProBook 4545s  |
+| Procesador (CPU) | A6-4440M 2700MHz |
+| Memoria RAM | 8 GB |
+| Almacenamiento | 465 GB |
+| Sistema Operativo | Windows 10 Pro |
