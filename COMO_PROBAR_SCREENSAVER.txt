@@ -1,0 +1,18 @@
+﻿COMO PROBAR COMO PROTECTOR DE PANTALLA EN WINDOWS
+
+Opcion 1: Compilar a .SCR
+1. Ejecutar scripts\build_scr.bat (genera RacePlan.scr en raiz)
+2. Copiar RacePlan.scr a C:\Windows\ o C:\Windows\System32\ (o directamente click derecho -> Instalar)
+3. Ir a Configuracion > Personalizacion > Bloqueo de pantalla > Configuracion de protector de pantalla
+   o Panel de Control > Apariencia y Personalizacion > Cambiar protector de pantalla
+4. Seleccionar RacePlan
+
+Opcion 2: Probar directo
+1. Generar horarios_filtrados.json con RacePlanGestor.bat (se guarda en %LOCALAPPDATA%\RacePlan\)
+2. Ejecutar VerScreensaver.bat para previsualizar
+
+Notas
+- El .SCR debe leer %LOCALAPPDATA%\RacePlan\horarios_filtrados.json
+- El gestor ya lo guarda ahi
+- Al mover mouse o presionar tecla sale
+
