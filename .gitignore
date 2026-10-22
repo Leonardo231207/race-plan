@@ -1,0 +1,34 @@
+﻿# App data
+*.json
+!docs/*.json
+horarios_filtrados.json
+a.json
+
+# Private/docs temp
+CARPETA DE PRENSA FECHA 9 2026 OK.txt
+pdfplumber_extract.txt
+extract_compare.py
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+.env
+
+# Build
+build/
+dist/
+*.spec
+*.scr
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Private docs
+docs/Privado/
+PR_DESCRIPTION.md
+idea principal del proyecto (V1).txt
+
