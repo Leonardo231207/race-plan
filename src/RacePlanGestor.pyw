@@ -293,9 +293,13 @@ class RacePlanGestor(QWidget):
         
         appdata = os.environ.get('LOCALAPPDATA')
         if not appdata:
-            appdata = os.path.expanduser('~\\AppData\\Local')
+            appdata = os.path.expanduser(os.path.join('~', 'AppData', 'Local'))
         target_dir = os.path.join(appdata, 'RacePlan')
-        os.makedirs(target_dir, exist_ok=True)
+        try:
+            os.makedirs(target_dir, exist_ok=True)
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"No se pudo crear carpeta:\n{target_dir}\n\n{e}")
+            return
         target_file = os.path.join(target_dir, 'horarios_filtrados.json')
         target_file_all = os.path.join(target_dir, 'horarios_todo.json')
         
@@ -304,10 +308,10 @@ class RacePlanGestor(QWidget):
                 json.dump(events_out, f, ensure_ascii=False, indent=2)
             with open(target_file_all, 'w', encoding='utf-8') as f:
                 json.dump(all_sorted, f, ensure_ascii=False, indent=2)
-            self.status_label.setText(f"✓ Guardado en:\n{target_file}\n\n{len(events_out)} evento(s) | Total: {len(all_sorted)}")
-            QMessageBox.information(self, "Listo", f"Guardado correctamente!\nMi filtro: {len(events_out)} evento(s)\nCronograma completo: {len(all_sorted)} evento(s)\n\n{target_file}")
+            self.status_label.setText(f"Guardado en:\n{target_dir}\n\nMi filtro: {len(events_out)} | Total: {len(all_sorted)}")
+            QMessageBox.information(self, "Listo", f"Guardado correctamente!\n\nCarpeta:\n{target_dir}\n\nMi filtro: {len(events_out)} evento(s)\nCronograma completo: {len(all_sorted)} evento(s)")
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"No se pudo guardar:\n{e}")
+            QMessageBox.critical(self, "Error", f"No se pudo guardar:\n{target_dir}\n\n{e}")
 
 
 if __name__ == '__main__':

@@ -139,43 +139,48 @@ class RaceScreensaver(QWidget):
     def load_data(self):
         appdata = os.environ.get('LOCALAPPDATA')
         if not appdata:
-            appdata = os.path.expanduser('~\\AppData\\Local')
+            appdata = os.path.expanduser(os.path.join('~', 'AppData', 'Local'))
         base_dir = os.path.dirname(os.path.abspath(__file__))
+        root_dir = os.path.dirname(base_dir)
         
         self.filtered_events = []
         self.all_events = []
         
-        # Mi filtro
-        path = os.path.join(appdata, 'RacePlan', 'horarios_filtrados.json')
-        if not os.path.exists(path):
-            path = os.path.join(base_dir, 'horarios_filtrados.json')
-        if not os.path.exists(path):
-            path = os.path.join(os.path.dirname(base_dir), 'horarios_filtrados.json')
-        if os.path.exists(path):
-            try:
-                with open(path, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                if isinstance(data, list):
-                    self.filtered_events = data
-            except Exception:
-                self.filtered_events = []
+        candidates_f = [
+            os.path.join(appdata, 'RacePlan', 'horarios_filtrados.json'),
+            os.path.join(base_dir, 'horarios_filtrados.json'),
+            os.path.join(root_dir, 'horarios_filtrados.json'),
+            os.path.join(root_dir, 'PDF LECTOR', 'horarios_filtrados.json'),
+            os.path.join(base_dir, '..', 'horarios_filtrados.json'),
+        ]
+        for p in candidates_f:
+            if os.path.exists(p):
+                try:
+                    with open(p, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    if isinstance(data, list) and data:
+                        self.filtered_events = data
+                        break
+                except Exception:
+                    continue
         
-        # Todo el cronograma
-        path_all = os.path.join(appdata, 'RacePlan', 'horarios_todo.json')
-        if not os.path.exists(path_all):
-            path_all = os.path.join(base_dir, 'horarios_todo.json')
-        if not os.path.exists(path_all):
-            path_all = os.path.join(os.path.dirname(base_dir), 'horarios_todo.json')
-        if os.path.exists(path_all):
-            try:
-                with open(path_all, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
-                if isinstance(data, list):
-                    self.all_events = data
-            except Exception:
-                self.all_events = []
-        else:
-            self.all_events = []
+        candidates_a = [
+            os.path.join(appdata, 'RacePlan', 'horarios_todo.json'),
+            os.path.join(base_dir, 'horarios_todo.json'),
+            os.path.join(root_dir, 'horarios_todo.json'),
+            os.path.join(root_dir, 'PDF LECTOR', 'horarios_todo.json'),
+            os.path.join(base_dir, '..', 'horarios_todo.json'),
+        ]
+        for p in candidates_a:
+            if os.path.exists(p):
+                try:
+                    with open(p, 'r', encoding='utf-8') as f:
+                        data = json.load(f)
+                    if isinstance(data, list):
+                        self.all_events = data
+                        break
+                except Exception:
+                    continue
 
     def get_current_time(self):
         return datetime.now()
@@ -205,7 +210,8 @@ class RaceScreensaver(QWidget):
         if not self.filtered_events:
             self.now_label.setText("SIN HORARIOS FILTRADOS")
             self.now_label.setStyleSheet("color: #ff3333;")
-            self.next_info_label.setText("SIN HORARIOS EN AppData\\Local\\RacePlan\\")
+            appdata = os.environ.get('LOCALAPPDATA') or os.path.expanduser(os.path.join('~','AppData','Local'))
+            self.next_info_label.setText(f"GENERAR CON GESTOR EN:\n{os.path.join(appdata,'RacePlan')}")
             self.next_info_label.setStyleSheet("color: #ff3333;")
             self.countdown_label.setText("--:--:--")
             return
