@@ -298,20 +298,43 @@ class RacePlanGestor(QWidget):
         try:
             os.makedirs(target_dir, exist_ok=True)
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"No se pudo crear carpeta:\n{target_dir}\n\n{e}")
-            return
+            pass
+        # intentar crear de todas formas
+        try:
+            import pathlib
+            pathlib.Path(target_dir).mkdir(parents=True, exist_ok=True)
+        except Exception:
+            pass
         target_file = os.path.join(target_dir, 'horarios_filtrados.json')
         target_file_all = os.path.join(target_dir, 'horarios_todo.json')
+        # también guardar copia junto al gestor por si acaso
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        root_dir = os.path.dirname(base_dir)
         
         try:
             with open(target_file, 'w', encoding='utf-8') as f:
                 json.dump(events_out, f, ensure_ascii=False, indent=2)
             with open(target_file_all, 'w', encoding='utf-8') as f:
                 json.dump(all_sorted, f, ensure_ascii=False, indent=2)
+            # copias backup
+            try:
+                with open(os.path.join(base_dir, 'horarios_filtrados.json'), 'w', encoding='utf-8') as f:
+                    json.dump(events_out, f, ensure_ascii=False, indent=2)
+                with open(os.path.join(base_dir, 'horarios_todo.json'), 'w', encoding='utf-8') as f:
+                    json.dump(all_sorted, f, ensure_ascii=False, indent=2)
+            except:
+                pass
+            try:
+                with open(os.path.join(root_dir, 'horarios_filtrados.json'), 'w', encoding='utf-8') as f:
+                    json.dump(events_out, f, ensure_ascii=False, indent=2)
+                with open(os.path.join(root_dir, 'horarios_todo.json'), 'w', encoding='utf-8') as f:
+                    json.dump(all_sorted, f, ensure_ascii=False, indent=2)
+            except:
+                pass
             self.status_label.setText(f"Guardado en:\n{target_dir}\n\nMi filtro: {len(events_out)} | Total: {len(all_sorted)}")
-            QMessageBox.information(self, "Listo", f"Guardado correctamente!\n\nCarpeta:\n{target_dir}\n\nMi filtro: {len(events_out)} evento(s)\nCronograma completo: {len(all_sorted)} evento(s)")
+            QMessageBox.information(self, "Listo", f"Guardado correctamente!\n\nCarpeta:\n{target_dir}\n\nArchivos:\nhorarios_filtrados.json\nhorarios_todo.json\n\nMi filtro: {len(events_out)} | Total: {len(all_sorted)}")
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"No se pudo guardar:\n{target_dir}\n\n{e}")
+            QMessageBox.critical(self, "Error", f"No se pudo guardar:\n{target_dir}\n\n{e}\n\nTambién intento guardar junto al programa")
 
 
 if __name__ == '__main__':

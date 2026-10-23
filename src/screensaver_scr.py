@@ -142,16 +142,19 @@ class RaceScreensaver(QWidget):
             appdata = os.path.expanduser(os.path.join('~', 'AppData', 'Local'))
         base_dir = os.path.dirname(os.path.abspath(__file__))
         root_dir = os.path.dirname(base_dir)
+        cwd = os.getcwd()
+        exe_dir = os.path.dirname(sys.executable) if getattr(sys, 'frozen', False) else base_dir
         
         self.filtered_events = []
         self.all_events = []
         
         candidates_f = [
             os.path.join(appdata, 'RacePlan', 'horarios_filtrados.json'),
+            os.path.join(exe_dir, 'horarios_filtrados.json'),
+            os.path.join(cwd, 'horarios_filtrados.json'),
             os.path.join(base_dir, 'horarios_filtrados.json'),
             os.path.join(root_dir, 'horarios_filtrados.json'),
             os.path.join(root_dir, 'PDF LECTOR', 'horarios_filtrados.json'),
-            os.path.join(base_dir, '..', 'horarios_filtrados.json'),
         ]
         for p in candidates_f:
             if os.path.exists(p):
@@ -160,16 +163,25 @@ class RaceScreensaver(QWidget):
                         data = json.load(f)
                     if isinstance(data, list) and data:
                         self.filtered_events = data
+                        # copiar a AppData para próximas veces
+                        try:
+                            tdir = os.path.join(appdata, 'RacePlan')
+                            os.makedirs(tdir, exist_ok=True)
+                            with open(os.path.join(tdir, 'horarios_filtrados.json'), 'w', encoding='utf-8') as f2:
+                                json.dump(data, f2, ensure_ascii=False, indent=2)
+                        except:
+                            pass
                         break
                 except Exception:
                     continue
         
         candidates_a = [
             os.path.join(appdata, 'RacePlan', 'horarios_todo.json'),
+            os.path.join(exe_dir, 'horarios_todo.json'),
+            os.path.join(cwd, 'horarios_todo.json'),
             os.path.join(base_dir, 'horarios_todo.json'),
             os.path.join(root_dir, 'horarios_todo.json'),
             os.path.join(root_dir, 'PDF LECTOR', 'horarios_todo.json'),
-            os.path.join(base_dir, '..', 'horarios_todo.json'),
         ]
         for p in candidates_a:
             if os.path.exists(p):
@@ -178,6 +190,13 @@ class RaceScreensaver(QWidget):
                         data = json.load(f)
                     if isinstance(data, list):
                         self.all_events = data
+                        try:
+                            tdir = os.path.join(appdata, 'RacePlan')
+                            os.makedirs(tdir, exist_ok=True)
+                            with open(os.path.join(tdir, 'horarios_todo.json'), 'w', encoding='utf-8') as f2:
+                                json.dump(data, f2, ensure_ascii=False, indent=2)
+                        except:
+                            pass
                         break
                 except Exception:
                     continue
