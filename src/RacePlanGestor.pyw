@@ -118,16 +118,32 @@ class RacePlanGestor(QWidget):
     
     def get_match_key(self, descripcion):
         s = descripcion.upper()
+        # PROCAR 4000 con formato "B" o "A" (puede tener guiones, comillas distintas)
+        m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*CLASE\s+([AB])\s*["\u201c\u201d]?\s*[-–]\s*GRUPO\s+([AB])', s)
+        if m:
+            return f'PROCAR 4000 "CLASE {m.group(1)}" (Grupo {m.group(2)})'
+        m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*([AB])\s*["\u201c\u201d]?\s*[-–]\s*GRUPO\s+([AB])', s)
+        if m:
+            return f'PROCAR 4000 "{m.group(1)}" (Grupo {m.group(2)})'
         m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*CLASE\s+([AB])\s*["\u201c\u201d]?\s*\(GRUPO\s+([AB])\)', s)
         if m:
             return f'PROCAR 4000 "CLASE {m.group(1)}" (Grupo {m.group(2)})'
-        m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*CLASE\s+([AB])\s*["\u201c\u201d]?', s)
+        m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*([AB])\s*["\u201c\u201d]?\s*\(GRUPO\s+([AB])\)', s)
         if m:
+            return f'PROCAR 4000 "{m.group(1)}" (Grupo {m.group(2)})'
+        m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*CLASE\s+([AB])\s*["\u201c\u201d]?', s)
+        if m and not re.search(r'GRUPO\s+[AB]', s):
             return f'PROCAR 4000 "CLASE {m.group(1)}"'
+        m = re.search(r'PROCAR\s+4000\s+["\u201c\u201d]?\s*([AB])\s*["\u201c\u201d]?', s)
+        if m and not re.search(r'GRUPO\s+[AB]', s):
+            return f'PROCAR 4000 "{m.group(1)}"'
         if re.search(r'PROCAR\s+2000', s):
             return 'PROCAR 2000'
-        if re.search(r'F1\s*M\.?A\.?', s):
-            return 'F1 M.A.'
+        m = re.search(r'F[OÓ]RMULA\s*1\s*GRUPO\s+([12])', s)
+        if m:
+            return f'FÓRMULA 1 (Grupo {m.group(1)})'
+        if re.search(r'F1\s*M\.?A\.?|F[OÓ]RMULA\s*1', s):
+            return 'FÓRMULA 1'
         m = re.search(r'F[ÓO]RMULA\s*07', s)
         if m:
             m2 = re.search(r'F[ÓO]RMULA\s*07\s*["\u201c\u201d]?([AB])["\u201c\u201d]?', s)
@@ -136,6 +152,9 @@ class RacePlanGestor(QWidget):
             return 'FORMULA 07'
         if re.search(r'FIAT\s+UNO\s+ASM', s):
             return 'FIAT UNO ASM'
+        m = re.search(r'\bSPA\b.*GRUPO\s+([12])', s)
+        if m:
+            return f'SPA (Grupo {m.group(1)})'
         if re.search(r'\bSPA\b', s):
             return 'SPA'
         return None
@@ -268,7 +287,9 @@ class RacePlanGestor(QWidget):
                 if ev['match_key'] in selected:
                     events_out.append(ev)
         
-        events_out.sort(key=lambda x: (x['event_hour'], x['event_min']))
+        events_out.sort(key=lambda x: (x.get('event_hour', 99), x.get('event_min', 99)))
+        all_sorted = list(self.all_events)
+        all_sorted.sort(key=lambda x: (x.get('event_hour', 99), x.get('event_min', 99)))
         
         appdata = os.environ.get('LOCALAPPDATA')
         if not appdata:
@@ -276,12 +297,15 @@ class RacePlanGestor(QWidget):
         target_dir = os.path.join(appdata, 'RacePlan')
         os.makedirs(target_dir, exist_ok=True)
         target_file = os.path.join(target_dir, 'horarios_filtrados.json')
+        target_file_all = os.path.join(target_dir, 'horarios_todo.json')
         
         try:
             with open(target_file, 'w', encoding='utf-8') as f:
                 json.dump(events_out, f, ensure_ascii=False, indent=2)
-            self.status_label.setText(f"✓ Guardado en:\n{target_file}\n\n{len(events_out)} evento(s)")
-            QMessageBox.information(self, "Listo", f"Guardado correctamente!\n{len(events_out)} evento(s)\n\n{target_file}")
+            with open(target_file_all, 'w', encoding='utf-8') as f:
+                json.dump(all_sorted, f, ensure_ascii=False, indent=2)
+            self.status_label.setText(f"✓ Guardado en:\n{target_file}\n\n{len(events_out)} evento(s) | Total: {len(all_sorted)}")
+            QMessageBox.information(self, "Listo", f"Guardado correctamente!\nMi filtro: {len(events_out)} evento(s)\nCronograma completo: {len(all_sorted)} evento(s)\n\n{target_file}")
         except Exception as e:
             QMessageBox.critical(self, "Error", f"No se pudo guardar:\n{e}")
 
